@@ -33,3 +33,37 @@ async function testDbConnection() {
     process.exit(1); // Keluar dari aplikasi jika database tidak terhubung
   }
 }
+
+// Middleware
+app.use(express.json());
+app.use(express.static('public')); // Untuk menyajikan file index.html, css, js
+
+// Route untuk halaman utama
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+// Endpoint untuk membuat API key
+// (Sekarang menjadi fungsi async untuk menunggu database)
+app.post('/create', async (req, res) => {
+  // 1. Buat API key
+  const timestamp = Math.floor(Date.now() / 1000).toString(36);
+  const random = crypto.randomBytes(32).toString('base64url');
+  const apiKey = sk-itumy-v1-${timestamp}_${random};
+
+  try {
+    // 2. Simpan API key ke database
+    const sqlQuery = 'INSERT INTO api_keys (api_key) VALUES (?)';
+    await pool.execute(sqlQuery, [apiKey]);
+
+    console.log(API Key baru dibuat dan disimpan: ${apiKey});
+
+    // 3. Kirim key kembali ke frontend
+    res.json({ apiKey });
+
+  } catch (error) {
+    console.error('Gagal menyimpan API key ke database:', error);
+    res.status(500).json({ message: 'Terjadi kesalahan pada server' });
+  }
+});
+
