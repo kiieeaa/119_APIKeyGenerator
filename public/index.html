@@ -176,3 +176,27 @@
     <div class="success-message" id="successMessage">
         ✓ API Key berhasil di-generate!
     </div>
+
+    <script>
+        async function generateAPIKey() {
+            try {
+                const response = await fetch('/create', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+
+                if (!response.ok) throw new Error('Gagal generate API key');
+
+                const data = await response.json();
+                document.getElementById('apikey').value = data.apiKey;
+
+                const msg = document.getElementById('successMessage');
+                msg.classList.add('show');
+                setTimeout(() => msg.classList.remove('show'), 3000);
+            } catch (error) {
+                alert('Terjadi kesalahan saat generate API key. Pastikan server berjalan!');
+            }
+        }
+    </script>
+</body>
+</html>
