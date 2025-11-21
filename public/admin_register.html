@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Register Admin</title>
+    <style>
+        /* Warna Dasar - Diperbarui untuk tema tosca kebiruan (Cyan/Teal) */
+        :root {
+            --bg-color: #00BCD4; /* Tosca Kebiruan (Cyan) yang lebih cerah untuk background */
+            --card-bg: #ffffff; 
+            --card-border: #e0e0e0; 
+            --primary-color: #00897B; /* Tosca/Teal gelap untuk teks dan highlight */
+            --primary-shadow: rgba(0, 137, 123, 0.3); 
+            --input-bg: #f5f5f5; 
+            --input-border: #e0e0e0; 
+            --text-color: #333333; 
+            --link-color: #757575; 
+            --link-hover: #00897B; /* Warna tosca gelap saat hover link */
+            --success-bg: rgba(0, 137, 123, 0.2);
+            --success-text: #00897B;
+            --success-border: #00897B;
+            --error-bg: rgba(239, 68, 68, 0.2);
+            --error-text: #f87171;
+            --error-border: #ef4444;
+        }
+
+        body {
+            background: var(--bg-color); 
+            color: var(--text-color); 
+            font-family: 'Segoe UI', sans-serif;
+            display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0;
+            overflow: hidden; 
+            position: relative;
+        }
+
+        /* Menambahkan bentuk melengkung */
+        body::before, body::after {
+            content: '';
+            position: absolute;
+            background: rgba(255, 255, 255, 0.1); 
+            border-radius: 50%;
+            z-index: 0;
+        }
+
+        body::before {
+            width: 300px;
+            height: 300px;
+            top: -50px;
+            left: -50px;
+            transform: rotate(45deg);
+        }
+
+        body::after {
+            width: 400px;
+            height: 400px;
+            bottom: -80px;
+            right: -80px;
+            transform: rotate(-30deg);
+        }
+
+        .register-box {
+            background: var(--card-bg); 
+            padding: 40px; border-radius: 16px; width: 320px;
+            border: 1px solid var(--card-border); 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
+            text-align: center;
+            position: relative; 
+            z-index: 1; 
+        }
+        h2 { 
+            margin-top: 0; color: var(--primary-color); letter-spacing: 1px; text-transform: uppercase; 
+            text-shadow: none; 
+            margin-bottom: 25px; 
+        }
+        
+        input { 
+            width: 100%; padding: 12px; margin: 10px 0; 
+            background: var(--input-bg); border: 1px solid var(--input-border); color: var(--text-color); 
+            border-radius: 8px; box-sizing: border-box; outline: none; transition: 0.3s;
+        }
+        input:focus { 
+            border-color: var(--primary-color); 
+            box-shadow: 0 0 8px var(--primary-shadow); 
+        }
+        
+        button { 
+            width: 100%; padding: 12px; 
+            /* Gradien tosca kebiruan */
+            background: linear-gradient(135deg, #4DD0E1, #00897B); 
+            border: none; border-radius: 8px; font-weight: bold; cursor: pointer; color: white; 
+            margin-top: 25px; 
+            transition: 0.3s;
+        }
+        button:hover { 
+            transform: translateY(-2px); 
+            box-shadow: 0 10px 20px rgba(0, 137, 123, 0.3); 
+        }
+        
+        .alert { margin-top: 15px; font-size: 0.85rem; display: none; padding: 8px; border-radius: 6px;}
+        .success { 
+            background: var(--success-bg); color: var(--success-text); border: 1px solid var(--success-border); 
+        }
+        .error { 
+            background: var(--error-bg); color: var(--error-text); border: 1px solid var(--error-border); 
+        }
+
+        .link { 
+            display: block; margin-top: 20px; color: var(--link-color); text-decoration: none; 
+            font-size: 0.85rem; transition: 0.3s; 
+        }
+        .link:hover { color: var(--link-hover); }
+
+        /* Icon atau Logo di atas form */
+        .icon-container {
+            width: 80px;
+            height: 80px;
+            /* Gradien tosca kebiruan */
+            background: linear-gradient(135deg, #4DD0E1, #00897B); 
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: -80px auto 20px auto; 
+            box-shadow: 0 5px 15px rgba(0, 137, 123, 0.4);
+            font-size: 3em;
+            color: white;
+            position: relative;
+            z-index: 2; 
+        }
+        .icon-container::before {
+            content: '🔑'; /* Icon kunci yang lebih cocok untuk admin */
+            font-size: 1.5em; 
+            line-height: 1; 
+        }
+
+    </style>
+</head>
+<body>
+    <div class="register-box">
+        <div class="icon-container"></div> 
+        <h2>New Admin</h2>
+        <input type="text" id="user" placeholder="Username Baru">
+        <input type="password" id="pass" placeholder="Password">
+        <input type="password" id="confPass" placeholder="Konfirmasi Password">
+        
+        <button onclick="register()">DAFTAR</button>
+        
+        <div id="msg" class="alert"></div>
+
+        <a href="/admin" class="link">← Kembali ke Login</a>
+    </div>
+
+    <script>
+        async function register() {
+            const username = document.getElementById('user').value;
+            const password = document.getElementById('pass').value;
+            const confPass = document.getElementById('confPass').value;
+            const msg = document.getElementById('msg');
+
+            // Validasi sederhana di klien
+            if(password !== confPass) {
+                msg.style.display = 'block';
+                msg.className = 'alert error';
+                msg.innerText = 'Password tidak cocok!';
+                return;
+            }
+
+            const res = await fetch('/api/register-admin', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({username, password})
+            });
+            const data = await res.json();
+
+            msg.style.display = 'block';
+            if(data.success) {
+                msg.className = 'alert success';
+                msg.innerHTML = '✅ Sukses! Mengalihkan...';
+                setTimeout(() => window.location.href = '/admin', 1500);
+            } else {
+                msg.className = 'alert error';
+                msg.innerText = '❌ ' + data.message;
+            }
+        }
+    </script>
+</body>
+</html>
+
