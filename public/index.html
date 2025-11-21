@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neo API Generator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0f766e 0%, #14b8a6 50%, #5eead4 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Animated background */
+        body::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(94, 234, 212, 0.2) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(45, 212, 191, 0.2) 0%, transparent 50%),
+                radial-gradient(circle at 40% 20%, rgba(20, 184, 166, 0.2) 0%, transparent 50%);
+            animation: backgroundMove 15s ease infinite;
+        }
+
+        @keyframes backgroundMove {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            50% { transform: scale(1.1) rotate(5deg); }
+        }
+
+        /* Floating shapes */
+        .shape {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(2px);
+        }
+
+        .shape1 {
+            width: 300px;
+            height: 300px;
+            top: -150px;
+            left: -150px;
+            animation: float1 20s infinite ease-in-out;
+        }
+
+        .shape2 {
+            width: 200px;
+            height: 200px;
+            bottom: -100px;
+            right: -100px;
+            animation: float2 15s infinite ease-in-out;
+        }
+
+        .shape3 {
+            width: 150px;
+            height: 150px;
+            top: 50%;
+            right: 10%;
+            animation: float3 18s infinite ease-in-out;
+        }
+
+        @keyframes float1 {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            33% { transform: translate(50px, 50px) rotate(120deg); }
+            66% { transform: translate(-30px, 80px) rotate(240deg); }
+        }
+
+        @keyframes float2 {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(-40px, -40px) scale(1.2); }
+        }
+
+        @keyframes float3 {
+            0%, 100% { transform: translate(0, 0); }
+            25% { transform: translate(20px, -30px); }
+            50% { transform: translate(-20px, 30px); }
+            75% { transform: translate(30px, 20px); }
+        }
+
+        .container {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
+            padding: 45px 40px;
+            border-radius: 24px;
+            box-shadow: 
+                0 30px 90px rgba(0, 0, 0, 0.3),
+                0 0 0 1px rgba(255, 255, 255, 0.5) inset;
+            width: 100%;
+            max-width: 460px;
+            text-align: center;
+            animation: cardSlideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+        }
+
+        /* Glow effect on card */
+        .card::before {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            border-radius: 24px;
+            background: linear-gradient(45deg, #14b8a6, #2dd4bf, #5eead4, #14b8a6);
+            background-size: 300% 300%;
+            opacity: 0;
+            z-index: -1;
+            animation: glowRotate 3s linear infinite;
+            transition: opacity 0.3s;
+        }
+
+        .card:hover::before {
+            opacity: 0.6;
+        }
+
+        @keyframes glowRotate {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes cardSlideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .header {
+            margin-bottom: 40px;
+        }
+
+        .logo {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #14b8a6, #0d9488);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            margin: 0 auto 20px;
+            box-shadow: 
+                0 10px 30px rgba(20, 184, 166, 0.5),
+                0 0 0 8px rgba(94, 234, 212, 0.1);
+            animation: logoFloat 3s ease-in-out infinite;
+            position: relative;
+        }
+
+        .logo::after {
+            content: '';
+            position: absolute;
+            inset: -10px;
+            border-radius: 20px;
+            background: linear-gradient(45deg, transparent, rgba(94, 234, 212, 0.3), transparent);
+            animation: logoGlow 2s linear infinite;
+        }
+
+        @keyframes logoFloat {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(5deg); }
+        }
+
+        @keyframes logoGlow {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        h1 {
+            color: #0f766e;
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #0f766e, #14b8a6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            color: #64748b;
+            font-size: 0.938rem;
+            font-weight: 500;
+        }
+
+        .form-group {
+            text-align: left;
+            margin-bottom: 24px;
+        }
+        
+        label {
+            display: block;
+            color: #475569;
+            font-size: 0.875rem;
+            margin-bottom: 10px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        label::before {
+            content: '•';
+            color: #14b8a6;
+            font-size: 1.2rem;
+        }
+
+        input {
+            width: 100%;
+            padding: 16px 18px;
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            color: #0f172a;
+            border-radius: 12px;
+            font-size: 0.938rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-weight: 500;
+        }
+        
+        input:focus {
+            border-color: #14b8a6;
+            outline: none;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(20, 184, 166, 0.1), 0 8px 20px rgba(20, 184, 166, 0.15);
+            transform: translateY(-2px);
+        }
+
+        input::placeholder {
+            color: #cbd5e1;
+        }
+
+        .key-wrapper {
+            display: flex;
+            gap: 12px;
+        }
+
+        .key-input {
+            font-family: 'SF Mono', 'Monaco', 'Courier New', monospace;
+            color: #0d9488;
+            font-weight: 700;
+            letter-spacing: 1px;
+            background: linear-gradient(135deg, #ccfbf1 0%, #99f6e4 100%);
+            border-color: #5eead4;
+            font-size: 0.875rem;
+        }
+
+        .btn-refresh {
+            background: linear-gradient(135deg, #14b8a6, #0d9488);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            width: 60px;
+            cursor: pointer;
+            font-size: 1.5rem;
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            flex-shrink: 0;
+            box-shadow: 0 4px 15px rgba(20, 184, 166, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-refresh::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .btn-refresh:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .btn-refresh:hover {
+            transform: rotate(180deg) scale(1.15);
+            box-shadow: 0 8px 25px rgba(20, 184, 166, 0.6);
+        }
+
+        .btn-refresh:active {
+            transform: rotate(180deg) scale(0.95);
+        }
+
+        .btn-save {
+            background: linear-gradient(135deg, #14b8a6 0%, #0d9488 50%, #0f766e 100%);
+            background-size: 200% 200%;
+            color: white;
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 14px;
+            font-weight: 700;
+            font-size: 1.063rem;
+            margin-top: 10px;
+            cursor: pointer;
+            transition: all 0.4s;
+            box-shadow: 0 8px 20px rgba(20, 184, 166, 0.4);
+            position: relative;
+            overflow: hidden;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-save::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn-save:hover::before {
+            left: 100%;
+        }
+
+        .btn-save:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(20, 184, 166, 0.6);
+            background-position: 100% 0;
+        }
+
+        .btn-save:active {
+            transform: translateY(-1px);
+        }
+
+        .alert {
+            margin-top: 24px;
+            padding: 16px 18px;
+            border-radius: 12px;
+            font-size: 0.938rem;
+            display: none;
+            font-weight: 600;
+            animation: alertSlide 0.4s ease;
+        }
+
+        @keyframes alertSlide {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .success {
+            background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+            color: #065f46;
+            border: 2px solid #6ee7b7;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+        }
+
+        .error {
+            background: linear-gradient(135deg, #fee2e2, #fecaca);
+            color: #991b1b;
+            border: 2px solid #fca5a5;
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+        }
+
+        .btn-admin {
+            color: white;
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: 600;
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            padding: 14px 36px;
+            border-radius: 14px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            animation: fadeInUp 1s ease-out 0.3s both;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .btn-admin:hover {
+            background: rgba(255, 255, 255, 0.25);
+            border-color: rgba(255, 255, 255, 0.8);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-admin:active {
+            transform: translateY(-1px);
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .card {
+                padding: 35px 28px;
+            }
+
+            h1 {
+                font-size: 1.625rem;
+            }
+
+            .logo {
+                width: 70px;
+                height: 70px;
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="shape shape1"></div>
+    <div class="shape shape2"></div>
+    <div class="shape shape3"></div>
+
+    <div class="container">
+        <div class="card">
+            <div class="header">
+                <div class="logo">💚</div>
+                <h1>API Access Portal</h1>
+                <p class="subtitle">Generate your secure API key instantly</p>
+            </div>
+
+            <div class="form-group">
+                <label>First Name</label>
+                <input type="text" id="fname" placeholder="Enter your first name">
+            </div>
+
+            <div class="form-group">
+                <label>Last Name</label>
+                <input type="text" id="lname" placeholder="Enter your last name">
+            </div>
+
+            <div class="form-group">
+                <label>Email Address</label>
+                <input type="email" id="email" placeholder="you@example.com">
+            </div>
+
+            <div class="form-group">
+                <label>Your Secure API Key</label>
+                <div class="key-wrapper">
+                    <input type="text" id="apikey" class="key-input" readonly placeholder="Click generate →">
+                    <button class="btn-refresh" onclick="genKey()" title="Generate New Key">↻</button>
+                </div>
+            </div>
+
+            <button class="btn-save" onclick="saveUser()">Activate Key</button>
+            <div id="msg" class="alert"></div>
+        </div>
+
+        <a href="/admin" class="btn-admin">
+            <span>💚</span> Admin Login
+        </a>
+    </div>
+
+    <script>
+        async function genKey() {
+            const res = await fetch('/generate-candidate');
+            const data = await res.json();
+            document.getElementById('apikey').value = data.apiKey;
+        }
+
+        async function saveUser() {
+            const body = {
+                firstName: document.getElementById('fname').value,
+                lastName: document.getElementById('lname').value,
+                email: document.getElementById('email').value,
+                apiKeyCandidate: document.getElementById('apikey').value
+            };
+            
+            if(!body.apiKeyCandidate) return alert("Please generate a key first!");
+
+            const res = await fetch('/register-user', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(body)
+            });
+            const data = await res.json();
+            const msg = document.getElementById('msg');
+            
+            msg.style.display = 'block';
+            if(data.success) {
+                msg.className = 'alert success';
+                msg.innerHTML = '✅ Access Granted! Key registered successfully.';
+            } else {
+                msg.className = 'alert error';
+                msg.innerText = '❌ ' + data.message;
+            }
+        }
+        genKey();
+    </script>
+</body>
+</html>
