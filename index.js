@@ -13,7 +13,7 @@ const port = 3000;
 const pool = mysql.createPool({
     host: '127.0.0.1',
     user: 'root',
-    password: '@dlh010404', // Sesuaikan password Anda
+    password: '@dlh010404', 
     database: 'apikey_db',
     port: 3309,
     waitForConnections: true,
@@ -107,12 +107,12 @@ app.post('/register-user', async (req, res) => {
     }
 });
 
-// 3. Login Admin
+// 3. Login Admin (Menggunakan email)
 app.post('/api/login', async (req, res) => {
-    const { username, password } = req.body;
+    const { email, password } = req.body; // <-- Diubah dari username ke email
     try {
-        const [rows] = await pool.execute('SELECT * FROM admin WHERE username = ?', [username]);
-        if (rows.length === 0) return res.status(401).json({ success: false, message: 'User tidak ditemukan' });
+        const [rows] = await pool.execute('SELECT * FROM admin WHERE email = ?', [email]); // <-- Diubah dari username ke email
+        if (rows.length === 0) return res.status(401).json({ success: false, message: 'Admin tidak ditemukan' });
 
         const match = await bcrypt.compare(password, rows[0].password);
         if (match) {
@@ -177,21 +177,20 @@ app.delete('/api/users/:id', requireAuth, async (req, res) => {
     }
 });
 
-// ... kode sebelumnya ...
 
-// TAMBAHAN: 6. Register Admin Baru
+// 7. Register Admin Baru (Menggunakan email)
 app.post('/api/register-admin', async (req, res) => {
-    const { username, password } = req.body;
+    const { email, password } = req.body; // <-- Diubah dari username ke email
 
-    if (!username || !password) {
-        return res.status(400).json({ success: false, message: 'Username dan Password wajib diisi!' });
+    if (!email || !password) { // <-- Diubah dari Username ke Email
+        return res.status(400).json({ success: false, message: 'Email dan Password wajib diisi!' });
     }
 
     try {
-        // Cek apakah username sudah ada
-        const [existing] = await pool.execute('SELECT id FROM admin WHERE username = ?', [username]);
+        // Cek apakah email sudah ada
+        const [existing] = await pool.execute('SELECT id FROM admin WHERE email = ?', [email]); // <-- Diubah dari username ke email
         if (existing.length > 0) {
-            return res.status(400).json({ success: false, message: 'Username sudah digunakan!' });
+            return res.status(400).json({ success: false, message: 'Email sudah digunakan!' });
         }
 
         // Hash Password
@@ -199,7 +198,7 @@ app.post('/api/register-admin', async (req, res) => {
         const hash = await bcrypt.hash(password, saltRounds);
 
         // Simpan ke Database
-        await pool.execute('INSERT INTO admin (username, password) VALUES (?, ?)', [username, hash]);
+        await pool.execute('INSERT INTO admin (email, password) VALUES (?, ?)', [email, hash]); // <-- Diubah dari username ke email
 
         res.json({ success: true, message: 'Admin berhasil didaftarkan!' });
     } catch (error) {
@@ -207,9 +206,7 @@ app.post('/api/register-admin', async (req, res) => {
     }
 });
 
-// ... (Kode sebelumnya)
-
-// TAMBAHAN: 7. Ambil Semua Data API Key (Termasuk yang belum ada user)
+// 8. Ambil Semua Data API Key (Termasuk yang belum ada user)
 app.get('/api/apikeys', requireAuth, async (req, res) => {
     try {
         // LEFT JOIN agar key yang tidak punya user tetap muncul
@@ -248,7 +245,7 @@ app.get('/api/apikeys', requireAuth, async (req, res) => {
     }
 });
 
-// TAMBAHAN: 8. Hapus API Key Saja
+// 9. Hapus API Key Saja
 app.delete('/api/apikeys/:id', requireAuth, async (req, res) => {
     try {
         // Karena ON DELETE CASCADE di database, menghapus key otomatis menghapus user terkait (jika ada)
@@ -258,7 +255,6 @@ app.delete('/api/apikeys/:id', requireAuth, async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 });
-
 
 
 app.listen(port, () => {

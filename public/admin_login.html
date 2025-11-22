@@ -3,6 +3,19 @@
 <head>
     <title>Admin Portal</title>
     <style>
+        /* Tema Tosca Modern */
+        :root {
+            --tosca-primary: #26A69A;
+            --tosca-dark: #00897B;
+            --tosca-light: #4DB6AC;
+            --card-bg: #ffffff;
+            --input-bg: #F5F5F5;
+            --text-dark: #004D40;
+            --text-light: #666666;
+            --success: #10b981;
+            --error: #ef4444;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -10,92 +23,105 @@
         }
 
         body {
-            background: linear-gradient(135deg, #0f766e 0%, #14b8a6 50%, #5eead4 100%);
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, var(--tosca-primary) 0%, var(--tosca-dark) 100%);
+            color: var(--text-dark);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            padding: 20px;
+            margin: 0;
             position: relative;
             overflow: hidden;
         }
 
-        /* Floating shapes */
+        /* Animated Background Circles */
         body::before,
         body::after {
             content: '';
             position: absolute;
             border-radius: 50%;
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.15);
+            animation: float 8s ease-in-out infinite;
+            filter: blur(40px);
         }
 
         body::before {
-            width: 300px;
-            height: 300px;
-            top: -100px;
-            left: -100px;
-            animation: float 20s infinite ease-in-out;
+            width: 400px;
+            height: 400px;
+            top: -150px;
+            left: -150px;
         }
 
         body::after {
-            width: 250px;
-            height: 250px;
-            bottom: -80px;
-            right: -80px;
-            animation: float 25s infinite ease-in-out reverse;
+            width: 500px;
+            height: 500px;
+            bottom: -200px;
+            right: -200px;
+            animation-delay: 4s;
         }
 
         @keyframes float {
-            0%, 100% { transform: translate(0, 0) scale(1); }
-            50% { transform: translate(30px, -30px) scale(1.1); }
+            0%, 100% {
+                transform: translateY(0) scale(1) rotate(0deg);
+            }
+            50% {
+                transform: translateY(-40px) scale(1.1) rotate(180deg);
+            }
         }
+
+        /* Floating hearts */
+        @keyframes floatHeart {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.6;
+            }
+            90% {
+                opacity: 0.6;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .floating-heart {
+            position: absolute;
+            font-size: 2em;
+            opacity: 0;
+            animation: floatHeart 15s linear infinite;
+            pointer-events: none;
+        }
+
+        .floating-heart:nth-child(1) { left: 10%; animation-delay: 0s; font-size: 1.5em; }
+        .floating-heart:nth-child(2) { left: 30%; animation-delay: 3s; font-size: 2em; }
+        .floating-heart:nth-child(3) { left: 50%; animation-delay: 6s; font-size: 1.8em; }
+        .floating-heart:nth-child(4) { left: 70%; animation-delay: 9s; font-size: 1.6em; }
+        .floating-heart:nth-child(5) { left: 90%; animation-delay: 12s; font-size: 2.2em; }
 
         .login-box {
-            background: rgba(255, 255, 255, 0.98);
-            backdrop-filter: blur(20px);
+            background: var(--card-bg);
             padding: 45px 40px;
             border-radius: 24px;
-            width: 100%;
-            max-width: 400px;
-            border: 1px solid rgba(255, 255, 255, 0.5);
-            box-shadow: 
-                0 30px 90px rgba(0, 0, 0, 0.3),
-                0 0 0 1px rgba(255, 255, 255, 0.5) inset;
+            width: 420px;
+            max-width: 90%;
+            border: none;
+            box-shadow: 0 20px 60px rgba(0, 137, 123, 0.25),
+                        0 0 100px rgba(77, 182, 172, 0.1);
             text-align: center;
             position: relative;
-            z-index: 10;
-            animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        /* Glow effect */
-        .login-box::before {
-            content: '';
-            position: absolute;
-            inset: -2px;
-            border-radius: 24px;
-            background: linear-gradient(45deg, #14b8a6, #2dd4bf, #5eead4, #14b8a6);
-            background-size: 300% 300%;
-            opacity: 0;
-            z-index: -1;
-            animation: glowRotate 3s linear infinite;
-            transition: opacity 0.3s;
-        }
-
-        .login-box:hover::before {
-            opacity: 0.6;
-        }
-
-        @keyframes glowRotate {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+            z-index: 1;
+            animation: slideUp 0.6s ease-out;
+            backdrop-filter: blur(10px);
         }
 
         @keyframes slideUp {
             from {
                 opacity: 0;
-                transform: translateY(50px) scale(0.95);
+                transform: translateY(40px) scale(0.95);
             }
             to {
                 opacity: 1;
@@ -103,60 +129,92 @@
             }
         }
 
-        .logo {
-            width: 80px;
-            height: 80px;
-            background: linear-gradient(135deg, #14b8a6, #0d9488);
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2.5rem;
-            margin: 0 auto 25px;
-            box-shadow: 
-                0 10px 30px rgba(20, 184, 166, 0.5),
-                0 0 0 8px rgba(94, 234, 212, 0.1);
-            animation: logoFloat 3s ease-in-out infinite;
-            position: relative;
-        }
-
-        .logo::after {
+        /* Decorative top bar */
+        .login-box::before {
             content: '';
             position: absolute;
-            inset: -10px;
-            border-radius: 20px;
-            background: linear-gradient(45deg, transparent, rgba(94, 234, 212, 0.3), transparent);
-            animation: logoGlow 2s linear infinite;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, 
+                var(--tosca-light), 
+                var(--tosca-primary), 
+                var(--tosca-dark),
+                var(--tosca-primary),
+                var(--tosca-light));
+            background-size: 200% 100%;
+            border-radius: 24px 24px 0 0;
+            animation: gradientFlow 3s ease infinite;
         }
 
-        @keyframes logoFloat {
-            0%, 100% { transform: translateY(0) rotate(0deg); }
-            50% { transform: translateY(-10px) rotate(5deg); }
+        @keyframes gradientFlow {
+            0%, 100% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
         }
 
-        @keyframes logoGlow {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        /* Icon Container */
+        .icon-container {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, var(--tosca-light), var(--tosca-dark));
+            border-radius: 24px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: -80px auto 25px auto;
+            box-shadow: 0 15px 35px rgba(38, 166, 154, 0.4),
+                        0 0 0 0 rgba(38, 166, 154, 0.4);
+            position: relative;
+            z-index: 2;
+            animation: loveBeat 1.5s ease-in-out infinite;
+        }
+
+        @keyframes loveBeat {
+            0%, 100% {
+                transform: scale(1);
+            }
+            10% {
+                transform: scale(1.1);
+            }
+            20% {
+                transform: scale(1);
+            }
+            30% {
+                transform: scale(1.1);
+            }
+            40% {
+                transform: scale(1);
+            }
+        }
+
+        .icon-container::before {
+            content: '💚';
+            font-size: 3em;
         }
 
         h2 {
-            color: #0f766e;
-            font-size: 1.875rem;
-            font-weight: 800;
+            margin-top: 0;
+            color: var(--tosca-primary);
+            letter-spacing: 1px;
+            text-transform: uppercase;
             margin-bottom: 10px;
-            background: linear-gradient(135deg, #0f766e, #14b8a6);
+            font-size: 2em;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--tosca-primary), var(--tosca-dark));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            letter-spacing: 1px;
-            text-transform: uppercase;
         }
 
         .subtitle {
-            color: #64748b;
-            font-size: 0.938rem;
+            color: var(--text-light);
+            font-size: 0.9em;
             margin-bottom: 30px;
-            font-weight: 500;
         }
 
         .input-group {
@@ -164,63 +222,88 @@
             text-align: left;
         }
 
-        label {
-            display: block;
-            color: #475569;
-            font-size: 0.875rem;
-            margin-bottom: 10px;
-            font-weight: 600;
+        .input-label {
             display: flex;
             align-items: center;
-            gap: 6px;
-        }
-
-        label::before {
-            content: '•';
-            color: #14b8a6;
-            font-size: 1.2rem;
-        }
-        
-        input { 
-            width: 100%;
-            padding: 16px 18px;
-            background: #f8fafc;
-            border: 2px solid #e2e8f0;
-            color: #0f172a;
-            border-radius: 12px;
-            font-size: 0.938rem;
-            outline: none;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            color: var(--text-light);
+            font-size: 0.88em;
+            margin-bottom: 8px;
             font-weight: 500;
         }
 
-        input::placeholder {
-            color: #cbd5e1;
+        .input-label::before {
+            content: '';
+            width: 4px;
+            height: 4px;
+            background: var(--tosca-primary);
+            border-radius: 50%;
+            margin-right: 8px;
         }
-        
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        input {
+            width: 100%;
+            padding: 14px 18px 14px 45px;
+            background: var(--input-bg);
+            border: 2px solid transparent;
+            color: var(--text-dark);
+            border-radius: 12px;
+            outline: none;
+            transition: all 0.3s ease;
+            font-size: 0.95em;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.2em;
+            opacity: 0.5;
+            transition: all 0.3s ease;
+        }
+
+        input::placeholder {
+            color: #9E9E9E;
+        }
+
         input:focus {
-            border-color: #14b8a6;
-            background: white;
-            box-shadow: 0 0 0 4px rgba(20, 184, 166, 0.1), 0 8px 20px rgba(20, 184, 166, 0.15);
+            border-color: var(--tosca-primary);
+            background: #ffffff;
+            box-shadow: 0 0 0 4px rgba(38, 166, 154, 0.15),
+                        0 4px 20px rgba(38, 166, 154, 0.2);
             transform: translateY(-2px);
         }
-        
-        button { 
+
+        input:focus + .input-icon {
+            opacity: 1;
+            color: var(--tosca-primary);
+            animation: iconBounce 0.5s ease;
+        }
+
+        @keyframes iconBounce {
+            0%, 100% { transform: translateY(-50%) scale(1); }
+            50% { transform: translateY(-50%) scale(1.2); }
+        }
+
+        button {
             width: 100%;
-            padding: 18px;
-            background: linear-gradient(135deg, #14b8a6 0%, #0d9488 50%, #0f766e 100%);
-            background-size: 200% 200%;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--tosca-primary) 0%, var(--tosca-dark) 100%);
             border: none;
-            border-radius: 14px;
+            border-radius: 12px;
             font-weight: 700;
-            font-size: 1.063rem;
             cursor: pointer;
             color: white;
             margin-top: 10px;
-            text-transform: uppercase;
+            transition: all 0.4s ease;
+            font-size: 1em;
             letter-spacing: 1px;
-            transition: all 0.4s;
-            box-shadow: 0 8px 20px rgba(20, 184, 166, 0.4);
+            text-transform: uppercase;
+            box-shadow: 0 4px 15px rgba(38, 166, 154, 0.4);
             position: relative;
             overflow: hidden;
         }
@@ -232,137 +315,299 @@
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-            transition: left 0.5s;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            transition: left 0.6s ease;
+        }
+
+        button::after {
+            content: '💚';
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.2em;
+            opacity: 0;
+            transition: all 0.3s ease;
         }
 
         button:hover::before {
             left: 100%;
         }
-        
+
+        button:hover::after {
+            opacity: 1;
+            right: 15px;
+        }
+
         button:hover {
+            background: linear-gradient(135deg, var(--tosca-dark) 0%, var(--tosca-primary) 100%);
             transform: translateY(-3px);
-            box-shadow: 0 12px 30px rgba(20, 184, 166, 0.6);
-            background-position: 100% 0;
+            box-shadow: 0 8px 30px rgba(38, 166, 154, 0.6);
+            letter-spacing: 2px;
         }
 
         button:active {
             transform: translateY(-1px);
         }
-        
-        .error {
-            background: linear-gradient(135deg, #fee2e2, #fecaca);
-            color: #991b1b;
-            border: 2px solid #fca5a5;
-            padding: 14px 16px;
-            border-radius: 10px;
-            font-size: 0.875rem;
-            margin-top: 20px;
-            display: none;
-            font-weight: 600;
-            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
-            animation: alertSlide 0.4s ease;
+
+        button:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
         }
 
-        @keyframes alertSlide {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        .error {
+            color: var(--error);
+            font-size: 0.9rem;
+            margin-top: 20px;
+            display: none;
+            padding: 14px 18px;
+            border-radius: 12px;
+            animation: shake 0.5s ease;
+            background: rgba(239, 68, 68, 0.15);
+            border-left: 4px solid var(--error);
+            font-weight: 500;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
         }
 
         .links {
-            margin-top: 30px;
-            font-size: 0.875rem;
+            margin-top: 25px;
+            font-size: 0.9rem;
             display: flex;
             flex-direction: column;
             gap: 12px;
         }
 
         .links a {
-            color: #64748b;
+            color: var(--text-light);
             text-decoration: none;
-            transition: all 0.3s;
-            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 8px 12px;
+            border-radius: 8px;
+            display: inline-block;
         }
 
         .links a:hover {
-            color: #14b8a6;
+            color: var(--tosca-primary);
+            background: rgba(38, 166, 154, 0.05);
             transform: translateX(5px);
         }
-        
+
+        .links a:first-child:hover {
+            transform: scale(1.05);
+        }
+
         .divider {
-            border-top: 1px solid #e2e8f0;
+            border-top: 1px solid #E0E0E0;
             margin: 5px 0;
+        }
+
+        /* Progress dots */
+        .progress-dots {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #E0E0E0;
+            transition: all 0.3s ease;
+        }
+
+        .dot.active {
+            background: var(--tosca-primary);
+            width: 24px;
+            border-radius: 4px;
         }
 
         /* Responsive */
         @media (max-width: 480px) {
             .login-box {
-                padding: 35px 28px;
+                padding: 35px 25px;
+                width: 95%;
             }
 
             h2 {
-                font-size: 1.625rem;
+                font-size: 1.6em;
             }
 
-            .logo {
-                width: 70px;
-                height: 70px;
-                font-size: 2rem;
+            .icon-container {
+                width: 80px;
+                height: 80px;
+                margin-top: -65px;
             }
         }
     </style>
 </head>
 <body>
+    <!-- Floating hearts -->
+    <div class="floating-heart">💚</div>
+    <div class="floating-heart">💚</div>
+    <div class="floating-heart">💚</div>
+    <div class="floating-heart">💚</div>
+    <div class="floating-heart">💚</div>
+
     <div class="login-box">
-        <div class="logo">💚</div>
+        <div class="icon-container"></div>
         <h2>Admin Access</h2>
-        <p class="subtitle">Secure administrator login</p>
+        <p class="subtitle">Portal administrator dengan cinta 💚</p>
 
         <div class="input-group">
-            <label>Username</label>
-            <input type="text" id="user" placeholder="Enter your username">
+            <label class="input-label">Email Address</label>
+            <div class="input-wrapper">
+                <input type="email" id="email" placeholder="admin@example.com" autocomplete="email">
+                <span class="input-icon">📧</span>
+            </div>
         </div>
 
         <div class="input-group">
-            <label>Password</label>
-            <input type="password" id="pass" placeholder="Enter your password">
+            <label class="input-label">Password</label>
+            <div class="input-wrapper">
+                <input type="password" id="pass" placeholder="Masukkan password" autocomplete="current-password">
+                <span class="input-icon">🔒</span>
+            </div>
         </div>
 
-        <button onclick="login()">LOGIN</button>
-        
+        <button onclick="login()">
+            <span>Login Sekarang</span>
+        </button>
+
         <div class="error" id="msg">Access Denied</div>
 
+        <div class="progress-dots">
+            <div class="dot active"></div>
+            <div class="dot"></div>
+        </div>
+
         <div class="links">
-            <a href="admin_register.html">Belum punya akun? Daftar Admin</a>
+            <a href="admin_register.html">Belum punya akun? Daftar Admin 💚</a>
             <div class="divider"></div>
             <a href="/">← Kembali ke Generator</a>
         </div>
     </div>
 
     <script>
-        async function login() {
-            const username = document.getElementById('user').value;
-            const password = document.getElementById('pass').value;
-            
-            const res = await fetch('/api/login', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({username, password})
+        // Progress animation
+        const dots = document.querySelectorAll('.dot');
+
+        document.querySelectorAll('input').forEach((input, index) => {
+            input.addEventListener('focus', () => {
+                dots.forEach((dot, i) => {
+                    dot.classList.toggle('active', i === index);
+                });
             });
-            const data = await res.json();
-            if(data.success) window.location.href = '/dashboard';
-            else {
-                document.getElementById('msg').style.display = 'block';
-                document.getElementById('msg').innerText = data.message;
+        });
+
+        async function login() {
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('pass').value;
+            const msg = document.getElementById('msg');
+            const button = document.querySelector('button');
+
+            // Hide error
+            msg.style.display = 'none';
+
+            // Validasi
+            if (!email || !password) {
+                msg.innerText = '⚠️ Email dan password harus diisi!';
+                msg.style.display = 'block';
+                return;
+            }
+
+            // Loading state
+            const originalText = button.innerHTML;
+            button.innerHTML = '<span>⏳ Memproses...</span>';
+            button.disabled = true;
+
+            try {
+                const res = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+                const data = await res.json();
+
+                if (data.success) {
+                    button.innerHTML = '<span>✅ Berhasil!</span>';
+                    dots.forEach(dot => dot.classList.add('active'));
+                    
+                    // Heart confetti
+                    createHeartConfetti();
+                    
+                    setTimeout(() => {
+                        window.location.href = '/dashboard';
+                    }, 1500);
+                } else {
+                    msg.style.display = 'block';
+                    msg.innerText = '❌ ' + data.message;
+                    button.innerHTML = originalText;
+                    button.disabled = false;
+                }
+            } catch (error) {
+                msg.style.display = 'block';
+                msg.innerText = '❌ Terjadi kesalahan koneksi!';
+                button.innerHTML = originalText;
+                button.disabled = false;
             }
         }
+
+        // Enter key untuk submit
+        document.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                login();
+            }
+        });
+
+        // Input validation feedback
+        document.querySelectorAll('input').forEach(input => {
+            input.addEventListener('input', function () {
+                const msg = document.getElementById('msg');
+                if (msg.style.display === 'block') {
+                    msg.style.display = 'none';
+                }
+            });
+        });
+
+        // Heart confetti saat sukses
+        function createHeartConfetti() {
+            for (let i = 0; i < 15; i++) {
+                setTimeout(() => {
+                    const heart = document.createElement('div');
+                    heart.innerHTML = '💚';
+                    heart.style.position = 'fixed';
+                    heart.style.left = Math.random() * 100 + '%';
+                    heart.style.top = '-50px';
+                    heart.style.fontSize = (Math.random() * 2 + 1) + 'em';
+                    heart.style.zIndex = '9999';
+                    heart.style.pointerEvents = 'none';
+                    heart.style.animation = 'confettiFall 3s ease-out forwards';
+                    document.body.appendChild(heart);
+
+                    setTimeout(() => heart.remove(), 3000);
+                }, i * 100);
+            }
+        }
+
+        // CSS untuk confetti
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes confettiFall {
+                to {
+                    transform: translateY(100vh) rotate(360deg);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
     </script>
 </body>
 </html>
-

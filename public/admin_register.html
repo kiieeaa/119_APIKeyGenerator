@@ -3,185 +3,641 @@
 <head>
     <title>Register Admin</title>
     <style>
-        /* Warna Dasar - Diperbarui untuk tema tosca kebiruan (Cyan/Teal) */
+        /* Tema Tosca Modern */
         :root {
-            --bg-color: #00BCD4; /* Tosca Kebiruan (Cyan) yang lebih cerah untuk background */
-            --card-bg: #ffffff; 
-            --card-border: #e0e0e0; 
-            --primary-color: #00897B; /* Tosca/Teal gelap untuk teks dan highlight */
-            --primary-shadow: rgba(0, 137, 123, 0.3); 
-            --input-bg: #f5f5f5; 
-            --input-border: #e0e0e0; 
-            --text-color: #333333; 
-            --link-color: #757575; 
-            --link-hover: #00897B; /* Warna tosca gelap saat hover link */
-            --success-bg: rgba(0, 137, 123, 0.2);
-            --success-text: #00897B;
-            --success-border: #00897B;
-            --error-bg: rgba(239, 68, 68, 0.2);
-            --error-text: #f87171;
-            --error-border: #ef4444;
+            --tosca-primary: #26A69A;
+            --tosca-dark: #00897B;
+            --tosca-light: #4DB6AC;
+            --tosca-bg: #E0F2F1;
+            --card-bg: #ffffff;
+            --input-bg: #F5F5F5;
+            --text-dark: #004D40;
+            --text-light: #666666;
+            --success: #10b981;
+            --error: #ef4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
         body {
-            background: var(--bg-color); 
-            color: var(--text-color); 
-            font-family: 'Segoe UI', sans-serif;
-            display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0;
-            overflow: hidden; 
-            position: relative;
-        }
-
-        /* Menambahkan bentuk melengkung */
-        body::before, body::after {
-            content: '';
-            position: absolute;
-            background: rgba(255, 255, 255, 0.1); 
-            border-radius: 50%;
-            z-index: 0;
-        }
-
-        body::before {
-            width: 300px;
-            height: 300px;
-            top: -50px;
-            left: -50px;
-            transform: rotate(45deg);
-        }
-
-        body::after {
-            width: 400px;
-            height: 400px;
-            bottom: -80px;
-            right: -80px;
-            transform: rotate(-30deg);
-        }
-
-        .register-box {
-            background: var(--card-bg); 
-            padding: 40px; border-radius: 16px; width: 320px;
-            border: 1px solid var(--card-border); 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
-            text-align: center;
-            position: relative; 
-            z-index: 1; 
-        }
-        h2 { 
-            margin-top: 0; color: var(--primary-color); letter-spacing: 1px; text-transform: uppercase; 
-            text-shadow: none; 
-            margin-bottom: 25px; 
-        }
-        
-        input { 
-            width: 100%; padding: 12px; margin: 10px 0; 
-            background: var(--input-bg); border: 1px solid var(--input-border); color: var(--text-color); 
-            border-radius: 8px; box-sizing: border-box; outline: none; transition: 0.3s;
-        }
-        input:focus { 
-            border-color: var(--primary-color); 
-            box-shadow: 0 0 8px var(--primary-shadow); 
-        }
-        
-        button { 
-            width: 100%; padding: 12px; 
-            /* Gradien tosca kebiruan */
-            background: linear-gradient(135deg, #4DD0E1, #00897B); 
-            border: none; border-radius: 8px; font-weight: bold; cursor: pointer; color: white; 
-            margin-top: 25px; 
-            transition: 0.3s;
-        }
-        button:hover { 
-            transform: translateY(-2px); 
-            box-shadow: 0 10px 20px rgba(0, 137, 123, 0.3); 
-        }
-        
-        .alert { margin-top: 15px; font-size: 0.85rem; display: none; padding: 8px; border-radius: 6px;}
-        .success { 
-            background: var(--success-bg); color: var(--success-text); border: 1px solid var(--success-border); 
-        }
-        .error { 
-            background: var(--error-bg); color: var(--error-text); border: 1px solid var(--error-border); 
-        }
-
-        .link { 
-            display: block; margin-top: 20px; color: var(--link-color); text-decoration: none; 
-            font-size: 0.85rem; transition: 0.3s; 
-        }
-        .link:hover { color: var(--link-hover); }
-
-        /* Icon atau Logo di atas form */
-        .icon-container {
-            width: 80px;
-            height: 80px;
-            /* Gradien tosca kebiruan */
-            background: linear-gradient(135deg, #4DD0E1, #00897B); 
-            border-radius: 50%;
+            background: linear-gradient(135deg, var(--tosca-primary) 0%, var(--tosca-dark) 100%);
+            color: var(--text-dark);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
-            margin: -80px auto 20px auto; 
-            box-shadow: 0 5px 15px rgba(0, 137, 123, 0.4);
-            font-size: 3em;
-            color: white;
+            min-height: 100vh;
+            margin: 0;
             position: relative;
-            z-index: 2; 
-        }
-        .icon-container::before {
-            content: '🔑'; /* Icon kunci yang lebih cocok untuk admin */
-            font-size: 1.5em; 
-            line-height: 1; 
+            overflow: hidden;
         }
 
+        /* Animated Background Circles dengan warna lebih cerah */
+        body::before,
+        body::after {
+            content: '';
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.15);
+            animation: float 8s ease-in-out infinite;
+            filter: blur(40px);
+        }
+
+        body::before {
+            width: 400px;
+            height: 400px;
+            top: -150px;
+            left: -150px;
+        }
+
+        body::after {
+            width: 500px;
+            height: 500px;
+            bottom: -200px;
+            right: -200px;
+            animation-delay: 4s;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) scale(1) rotate(0deg);
+            }
+            50% {
+                transform: translateY(-40px) scale(1.1) rotate(180deg);
+            }
+        }
+
+        /* Tambahan: Floating hearts di background */
+        @keyframes floatHeart {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.6;
+            }
+            90% {
+                opacity: 0.6;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .floating-heart {
+            position: absolute;
+            font-size: 2em;
+            opacity: 0;
+            animation: floatHeart 15s linear infinite;
+            pointer-events: none;
+        }
+
+        .floating-heart:nth-child(1) { left: 10%; animation-delay: 0s; font-size: 1.5em; }
+        .floating-heart:nth-child(2) { left: 30%; animation-delay: 3s; font-size: 2em; }
+        .floating-heart:nth-child(3) { left: 50%; animation-delay: 6s; font-size: 1.8em; }
+        .floating-heart:nth-child(4) { left: 70%; animation-delay: 9s; font-size: 1.6em; }
+        .floating-heart:nth-child(5) { left: 90%; animation-delay: 12s; font-size: 2.2em; }
+
+        .register-box {
+            background: var(--card-bg);
+            padding: 45px 40px;
+            border-radius: 24px;
+            width: 420px;
+            max-width: 90%;
+            border: none;
+            box-shadow: 0 20px 60px rgba(0, 137, 123, 0.25),
+                        0 0 100px rgba(77, 182, 172, 0.1);
+            text-align: center;
+            position: relative;
+            z-index: 1;
+            animation: slideUp 0.6s ease-out;
+            backdrop-filter: blur(10px);
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        /* Decorative top bar dengan animasi gradient */
+        .register-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, 
+                var(--tosca-light), 
+                var(--tosca-primary), 
+                var(--tosca-dark),
+                var(--tosca-primary),
+                var(--tosca-light));
+            background-size: 200% 100%;
+            border-radius: 24px 24px 0 0;
+            animation: gradientFlow 3s ease infinite;
+        }
+
+        @keyframes gradientFlow {
+            0%, 100% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+        }
+
+        /* Icon Container - dengan efek love beating */
+        .icon-container {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, var(--tosca-light), var(--tosca-dark));
+            border-radius: 24px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: -80px auto 25px auto;
+            box-shadow: 0 15px 35px rgba(38, 166, 154, 0.4),
+                        0 0 0 0 rgba(38, 166, 154, 0.4);
+            position: relative;
+            z-index: 2;
+            animation: loveBeat 1.5s ease-in-out infinite;
+        }
+
+        @keyframes loveBeat {
+            0%, 100% {
+                transform: scale(1);
+            }
+            10% {
+                transform: scale(1.1);
+            }
+            20% {
+                transform: scale(1);
+            }
+            30% {
+                transform: scale(1.1);
+            }
+            40% {
+                transform: scale(1);
+            }
+        }
+
+        .icon-container::before {
+            content: '💚';
+            font-size: 3em;
+        }
+
+        h2 {
+            margin-top: 0;
+            color: var(--tosca-primary);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            font-size: 2em;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--tosca-primary), var(--tosca-dark));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            color: var(--text-light);
+            font-size: 0.9em;
+            margin-bottom: 30px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .input-label {
+            display: flex;
+            align-items: center;
+            color: var(--text-light);
+            font-size: 0.88em;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .input-label::before {
+            content: '';
+            width: 4px;
+            height: 4px;
+            background: var(--tosca-primary);
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        input {
+            width: 100%;
+            padding: 14px 18px 14px 45px;
+            background: var(--input-bg);
+            border: 2px solid transparent;
+            color: var(--text-dark);
+            border-radius: 12px;
+            outline: none;
+            transition: all 0.3s ease;
+            font-size: 0.95em;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.2em;
+            opacity: 0.5;
+            transition: all 0.3s ease;
+        }
+
+        input::placeholder {
+            color: #9E9E9E;
+        }
+
+        input:focus {
+            border-color: var(--tosca-primary);
+            background: #ffffff;
+            box-shadow: 0 0 0 4px rgba(38, 166, 154, 0.15),
+                        0 4px 20px rgba(38, 166, 154, 0.2);
+            transform: translateY(-2px);
+        }
+
+        input:focus + .input-icon {
+            opacity: 1;
+            color: var(--tosca-primary);
+            animation: iconBounce 0.5s ease;
+        }
+
+        @keyframes iconBounce {
+            0%, 100% { transform: translateY(-50%) scale(1); }
+            50% { transform: translateY(-50%) scale(1.2); }
+        }
+
+        button {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--tosca-primary) 0%, var(--tosca-dark) 100%);
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            color: white;
+            margin-top: 10px;
+            transition: all 0.4s ease;
+            font-size: 1em;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            box-shadow: 0 4px 15px rgba(38, 166, 154, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            transition: left 0.6s ease;
+        }
+
+        button::after {
+            content: '💚';
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.2em;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        button:hover::before {
+            left: 100%;
+        }
+
+        button:hover::after {
+            opacity: 1;
+            right: 15px;
+        }
+
+        button:hover {
+            background: linear-gradient(135deg, var(--tosca-dark) 0%, var(--tosca-primary) 100%);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(38, 166, 154, 0.6);
+            letter-spacing: 2px;
+        }
+
+        button:active {
+            transform: translateY(-1px);
+        }
+
+        button:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .alert {
+            margin-top: 20px;
+            font-size: 0.9rem;
+            display: none;
+            padding: 14px 18px;
+            border-radius: 12px;
+            animation: fadeInUp 0.4s ease;
+            font-weight: 500;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .success {
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--success);
+            border-left: 4px solid var(--success);
+        }
+
+        .error {
+            background: rgba(239, 68, 68, 0.15);
+            color: var(--error);
+            border-left: 4px solid var(--error);
+        }
+
+        .link {
+            display: inline-flex;
+            align-items: center;
+            margin-top: 25px;
+            color: var(--text-light);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            padding: 8px 12px;
+            border-radius: 8px;
+        }
+
+        .link:hover {
+            color: var(--tosca-primary);
+            background: rgba(38, 166, 154, 0.05);
+            transform: translateX(-5px);
+        }
+
+        /* Progress dots */
+        .progress-dots {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin-top: 25px;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #E0E0E0;
+            transition: all 0.3s ease;
+        }
+
+        .dot.active {
+            background: var(--tosca-primary);
+            width: 24px;
+            border-radius: 4px;
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .register-box {
+                padding: 35px 25px;
+                width: 95%;
+            }
+
+            h2 {
+                font-size: 1.6em;
+            }
+
+            .icon-container {
+                width: 80px;
+                height: 80px;
+                margin-top: -65px;
+            }
+        }
     </style>
 </head>
 <body>
+    <!-- Floating hearts -->
+    <div class="floating-heart">💚</div>
+    <div class="floating-heart">💚</div>
+    <div class="floating-heart">💚</div>
+    <div class="floating-heart">💚</div>
+    <div class="floating-heart">💚</div>
+
     <div class="register-box">
-        <div class="icon-container"></div> 
+        <div class="icon-container"></div>
         <h2>New Admin</h2>
-        <input type="text" id="user" placeholder="Username Baru">
-        <input type="password" id="pass" placeholder="Password">
-        <input type="password" id="confPass" placeholder="Konfirmasi Password">
-        
-        <button onclick="register()">DAFTAR</button>
-        
+        <p class="subtitle">Buat akun administrator dengan cinta 💚</p>
+
+        <div class="input-group">
+            <label class="input-label">Email Address</label>
+            <div class="input-wrapper">
+                <input type="email" id="email" placeholder="admin@example.com" autocomplete="email">
+                <span class="input-icon">📧</span>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <label class="input-label">Password</label>
+            <div class="input-wrapper">
+                <input type="password" id="pass" placeholder="Masukkan password" autocomplete="new-password">
+                <span class="input-icon">🔒</span>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <label class="input-label">Konfirmasi Password</label>
+            <div class="input-wrapper">
+                <input type="password" id="confPass" placeholder="Ulangi password" autocomplete="new-password">
+                <span class="input-icon">🔑</span>
+            </div>
+        </div>
+
+        <button onclick="register()">
+            <span>Daftar Sekarang</span>
+        </button>
+
         <div id="msg" class="alert"></div>
 
-        <a href="/admin" class="link">← Kembali ke Login</a>
+        <div class="progress-dots">
+            <div class="dot active"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+        </div>
+
+        <a href="/admin" class="link">
+            <span>← Kembali ke Login</span>
+        </a>
     </div>
 
     <script>
+        // Progress animation
+        const dots = document.querySelectorAll('.dot');
+
+        document.querySelectorAll('input').forEach((input, index) => {
+            input.addEventListener('focus', () => {
+                dots.forEach((dot, i) => {
+                    dot.classList.toggle('active', i === index);
+                });
+            });
+        });
+
         async function register() {
-            const username = document.getElementById('user').value;
+            const email = document.getElementById('email').value.trim();
             const password = document.getElementById('pass').value;
             const confPass = document.getElementById('confPass').value;
             const msg = document.getElementById('msg');
 
-            // Validasi sederhana di klien
-            if(password !== confPass) {
-                msg.style.display = 'block';
-                msg.className = 'alert error';
-                msg.innerText = 'Password tidak cocok!';
+            // Reset alert
+            msg.style.display = 'none';
+
+            // Validasi
+            if (!email || !password || !confPass) {
+                showAlert('error', '⚠️ Semua field harus diisi!');
                 return;
             }
 
-            const res = await fetch('/api/register-admin', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({username, password})
-            });
-            const data = await res.json();
+            // Validasi email format
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                showAlert('error', '⚠️ Format email tidak valid!');
+                return;
+            }
 
-            msg.style.display = 'block';
-            if(data.success) {
-                msg.className = 'alert success';
-                msg.innerHTML = '✅ Sukses! Mengalihkan...';
-                setTimeout(() => window.location.href = '/admin', 1500);
-            } else {
-                msg.className = 'alert error';
-                msg.innerText = '❌ ' + data.message;
+            if (password !== confPass) {
+                showAlert('error', '❌ Password tidak cocok!');
+                return;
+            }
+
+            if (password.length < 6) {
+                showAlert('error', '⚠️ Password minimal 6 karakter!');
+                return;
+            }
+
+            // Loading state
+            const button = document.querySelector('button');
+            const originalText = button.innerHTML;
+            button.innerHTML = '<span>⏳ Mendaftar...</span>';
+            button.disabled = true;
+
+            try {
+                const res = await fetch('/api/register-admin', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+                const data = await res.json();
+
+                if (data.success) {
+                    showAlert('success', '✅ Berhasil! Selamat datang admin baru 💚');
+                    dots.forEach(dot => dot.classList.add('active'));
+                    
+                    // Tambah konfeti hearts
+                    createHeartConfetti();
+                    
+                    setTimeout(() => window.location.href = '/admin', 2000);
+                } else {
+                    showAlert('error', '❌ ' + data.message);
+                    button.innerHTML = originalText;
+                    button.disabled = false;
+                }
+            } catch (error) {
+                showAlert('error', '❌ Terjadi kesalahan koneksi!');
+                button.innerHTML = originalText;
+                button.disabled = false;
             }
         }
+
+        function showAlert(type, message) {
+            const msg = document.getElementById('msg');
+            msg.className = 'alert ' + type;
+            msg.innerText = message;
+            msg.style.display = 'block';
+        }
+
+        // Enter key untuk submit
+        document.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                register();
+            }
+        });
+
+        // Input validation feedback
+        document.querySelectorAll('input').forEach(input => {
+            input.addEventListener('input', function () {
+                if (this.value.length > 0) {
+                    this.style.borderColor = 'var(--tosca-light)';
+                } else {
+                    this.style.borderColor = 'transparent';
+                }
+            });
+        });
+
+        // Heart confetti saat sukses
+        function createHeartConfetti() {
+            for (let i = 0; i < 15; i++) {
+                setTimeout(() => {
+                    const heart = document.createElement('div');
+                    heart.innerHTML = '💚';
+                    heart.style.position = 'fixed';
+                    heart.style.left = Math.random() * 100 + '%';
+                    heart.style.top = '-50px';
+                    heart.style.fontSize = (Math.random() * 2 + 1) + 'em';
+                    heart.style.zIndex = '9999';
+                    heart.style.pointerEvents = 'none';
+                    heart.style.animation = 'confettiFall 3s ease-out forwards';
+                    document.body.appendChild(heart);
+
+                    setTimeout(() => heart.remove(), 3000);
+                }, i * 100);
+            }
+        }
+
+        // CSS untuk confetti
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes confettiFall {
+                to {
+                    transform: translateY(100vh) rotate(360deg);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
     </script>
 </body>
 </html>
-
