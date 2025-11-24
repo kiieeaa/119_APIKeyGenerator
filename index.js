@@ -13,7 +13,7 @@ const port = 3000;
 const pool = mysql.createPool({
     host: '127.0.0.1',
     user: 'root',
-    password: '@dlh010404', 
+    password: '@dlh010404', // Sesuaikan password Anda
     database: 'apikey_db',
     port: 3309,
     waitForConnections: true,
@@ -257,6 +257,117 @@ app.delete('/api/apikeys/:id', requireAuth, async (req, res) => {
 });
 
 
-app.listen(port, () => {
+// 10. Validasi API Key (Dengan detail User dan status)
+app.post('/api/validate', async (req, res) => {
+    const { api_key } = req.body;
+
+    if (!api_key) {
+        return res.status(400).json({ success: false, message: 'API Key wajib disertakan.' });
+    }
+
+    try {
+        const sql = `
+            SELECT 
+                k.id, 
+                k.is_active, 
+                k.expires_at,
+                u.first_name, 
+                u.last_name, 
+                u.email
+            FROM api_keys k
+            LEFT JOIN users u ON k.id = u.api_key_id
+            WHERE k.api_key = ?
+        `;
+        const [rows] = await pool.execute(sql, [api_key]);
+
+        if (rows.length === 0) {
+            return res.status(401).json({ success: false, message: 'API Key tidak valid.' });
+        }
+
+        const keyData = rows[0];
+        const now = new Date();
+        const expiresAt = new Date(keyData.expires_at);
+
+        let statusKey = 'active';
+
+        if (!keyData.is_active) {
+            statusKey = 'nonaktif';
+            return res.status(403).json({ success: false, message: 'API Key dinonaktifkan.', status: statusKey });
+        }
+        
+        if (expiresAt < now) {
+            statusKey = 'expired';
+            return res.status(403).json({ success: false, message: 'API Key telah kedaluwarsa.', status: statusKey });
+        }
+        
+        // Key valid, aktif, dan belum expired
+        
+        // Opsional: Update kolom last_used (last_login)
+        //await pool.execute('UPDATE api_keys SET last_used = NOW() WHERE id = ?', [keyData.id]);
+        
+        // Format respons sesuai permintaan
+        res.json({ 
+            success: true, 
+            message: '✅ API Key valid!', 
+            status: statusKey,
+            user: {
+                nama: keyData.first_name && keyData.last_name ? 
+                      `${keyData.first_name} ${keyData.last_name}` : 
+                      'N/A',
+                email: keyData.email || 'N/A'
+            },
+            // Menggunakan last_used sebagai last_login (Jika kolom tersedia)
+            last_used: new Date().toISOString() 
+        });
+        
+    } catch (error) {
+        // Log error di server
+        console.error("Validation Error:", error);
+        res.status(500).json({ success: false, message: 'Terjadi kesalahan server.' });
+    }
+});
+
+// 11. Toggle (Aktif/Nonaktif) API Key
+app.put('/api/apikeys/toggle/:id', requireAuth, async (req, res) => {
+    const keyId = req.params.id;
+    const { activate } = req.body; // true = aktifkan, false = matikan
+
+    if (typeof activate !== 'boolean') {
+        return res.status(400).json({ success: false, message: 'Payload "activate" harus boolean.' });
+    }
+
+    const isActive = activate ? 1 : 0; 
+    
+    try {
+        const [result] = await pool.execute(
+            'UPDATE api_keys SET is_active = ? WHERE id = ?', 
+            [isActive, keyId]
+        );
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ success: false, message: 'API Key tidak ditemukan.' });
+        }
+
+        const action = activate ? 'diaktifkan' : 'dinonaktifkan';
+        res.json({ success: true, message: `API Key ${keyId} berhasil ${action}.` });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// --- GANTI BAGIAN PALING BAWAH DENGAN INI ---
+
+// Kita simpan jalannya aplikasi ke dalam variabel bernama 'server'
+const server = app.listen(port, () => {
     console.log(`🚀 Server running on http://localhost:${port}`);
+});
+
+// Sekarang variabel 'server' sudah ada, jadi bisa kita pasangi pendeteksi error
+server.on('error', (e) => {
+    if (e.code === 'EADDRINUSE') {
+        console.log('❌ Error Fatal: Port 3000 sedang dipakai aplikasi lain!');
+        console.log('👉 Solusi: Matikan terminal lain atau ganti const port = 3001');
+    } else {
+        console.error('❌ Server Error:', e);
+    }
 });
